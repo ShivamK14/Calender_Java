@@ -67,31 +67,41 @@ public class Calender {
     Lastday = StartDay;
 
     // PrintLast Week
-    while (StartDay != 0) {
-      System.out.print("|           ");
-      StartDay = (StartDay + 1) % 7;
+    if (StartDay != 0) {
+      while (StartDay < 7) {
+        System.out.print("|           ");
+        StartDay++;
+      }
+      System.out.println("|");
+      PrintBorder(length);
     }
-    System.out.println("|");
-    PrintBorder(length);
   }
 
   // Main Function to print N Months starting for Specific year and month
   public static void PrintNMonths(int startYear, int startMonth, int endMonth) {
-
+    int noOfmonthsSinceStart = (startYear * 12) + (startMonth - 1);
+    int month_index = (noOfmonthsSinceStart % 12);
     for (int i = 0; i < endMonth; i++) {
-      int StarDay = Lastday;
 
-      PrintMonths(MONTHS[startMonth], DAYS_OF_MONTHS[startMonth], startYear, is_leap_year(startYear), StarDay);
+      int StarDay = CalculateStartDay(startYear);
+      boolean leap = (month_index == 1 && is_leap_year(startYear));
+      PrintMonths(MONTHS[month_index], DAYS_OF_MONTHS[month_index], startYear, leap, StarDay);
       startMonth++;
+      month_index++;
     }
   }
 
-  public static int CalculateStartDay() {
-    return 2;
+  public static int CalculateStartDay(int year) {
+    int century = (year - 1) / 100;
+    
+    int y = (year - 1) % 100;
+    int weekday = (((29 - (2 * century) + y + (y / 4) + (century / 4)) % 7) + 7) % 7;
+    System.out.println(century+" "+weekday+" "+y);
+    return weekday;
   }
 
   // Main Function takes start year and month
   public static void main(String[] args) {
-    PrintNMonths(2024, 1, 3);
+    PrintNMonths(2023, 1, 3);
   }
 }
